@@ -359,7 +359,7 @@
         if(!cpbundleq.hasOnlyDefaultVariant) {
           let variants_markup = document.getElementById('cpbundleqVariantsMarkup').innerHTML;
           let variant_label = typeof bundle.text_variant_label != 'undefined' ? bundle.text_variant_label : 'Variant [index]' ;
-          variant_label = variant_label.replaceAll('[index]',i+1);
+          variant_label = variant_label.replace(/\[index\]/g,i+1);
           variants_markup = variants_markup.replace(/\[variantLabel\]/g, variant_label);
           variants_html += variants_markup; 
         }       
