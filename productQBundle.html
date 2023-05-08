@@ -1,0 +1,440 @@
+<style>
+  .cpbundleq_widgetWrap {
+    --button-border-color: #000000;
+    --button-bg-color: #000000;
+    --button-txt-color: #ffffff;
+    --button-hover-bg-color: #ffffff;
+    --button-hover-txt-color: #000000;
+    --tag-bg-color: #000000;
+    --tag-txt-color: #ffffff;
+  }
+
+  .cpbundleq_widgetWrap { margin: 36px 0; }
+  .cpbundleq_widgetWrap:not(.cpbundleq_loading) .cpbundleq_initLoader {display: none;}
+  .cpbundleq_initLoader {text-align: center;}
+  
+  .cpbundleq_button {font-size: 16px; width: 100%; line-height: normal; background-color: var(--button-bg-color); color: var(--button-txt-color); border: 1px solid var(--button-border-color); border-radius: 4px; padding: 8px 12px; cursor: pointer; text-align: center;}
+  .cpbundleq_button:hover {background-color: var(--button-hover-bg-color);color: var(--button-hover-txt-color);}
+  .cpbundleq_button.cpbundleq_loading {opacity: .6; cursor: not-allowed; padding-top: 2px; padding-bottom: 2px;}
+  .cpbundleq_button:not(.cpbundleq_loading) .cpbundleq_loader {display: none;}
+  .cpbundleq_button.cpbundleq_loading .cpbundleq_btnTxt {display: none;}
+  
+  .cpbundleq_loader svg {fill:currentColor;animation:.5s linear infinite spin;display: inline-block; vertical-align: middle;}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  
+  .cpbundleq_hide {display: none;}
+  .cpbundleq_error {color: #f33;line-height: normal;font-size:14px;margin:4px 0 0;}
+  
+  .cpbundleq_title { font-size: 22px; margin: 0 0 20px; }
+  .cpbundleq_inner {padding: 16px;border: 1px solid #d3d3d3;border-radius: 4px;}
+  
+  .cpbundleq_tiers {margin-bottom: 20px;}
+  .cpbundleq_tier {padding: 14px;border: 1px solid #d3d3d3;border-radius: 4px;}
+  .cpbundleq_tier:not(:last-child) {margin-bottom: 14px;}
+  .cpbundleq_tier.cpbundleq_selected {background-color: #f9f9f9;}
+  .cpbundleq_tierSelect { display: flex;align-items: center;margin-bottom: 4px; }
+  .cpbundleq_tierSelect input {cursor: pointer; margin: 0;width: 14px; height: 14px;min-height: auto;}
+  .cpbundleq_tierSelect label {cursor: pointer; font-size: 16px; line-height: normal; font-weight: normal; margin: 0; padding: 0 0 0 8px;}
+  
+  .cpbundleq_tierPricing {text-align: right;display: flex;padding-left: 22px;}
+  .cpbundleq_price { font-size: 16px;line-height: normal;font-weight: 700;}
+  .cpbundleq_price:not(:last-child) {margin-right: 10px;}
+  .cpbundleq_comparePrice { font-weight: normal;text-decoration: line-through; }
+  
+  .cpbundleq_variants {margin-top: 14px;padding-top: 14px; border-top: 1px solid #d3d3d3;}
+  .cpbundleq_variantSelect {width: 100%; font-size: 16px; line-height: normal; margin: 0; padding: 8px 20px 8px 12px; background: url(https://cdn.shopify.com/s/files/1/0586/4246/4802/files/down-arrow.svg?v=1681364743) no-repeat right 6px center; border: 1px solid currentColor; height: auto; appearance: none; -webkit-appearance: none;}
+  .cpbundleq_tier:not(.cpbundleq_selected) .cpbundleq_variants {display: none;}
+  
+  .cpbundleq_variantPicker label {font-size: 14px;line-height: normal;display: block;margin-bottom: 6px;}
+  .cpbundleq_variantPicker:not(:last-child) {margin-bottom: 10px;}
+  
+  .cpbundleq_lblTxt {margin-right: 6px;font-size: inherit; color: inherit; line-height: inherit;}
+  .cpbundleq_tag { font-size: 12px; letter-spacing: normal; padding: 2px 6px; display: inline-block; border-radius: 4px; vertical-align: middle; background-color: var(--tag-bg-color); color: var(--tag-txt-color); }
+  
+  @media (min-width: 768px) {
+    .cpbundleq_tier {padding: 16px;}
+    .cpbundleq_tier:not(:last-child) {margin-bottom: 16px;}
+    .cpbundleq_tierSelect {margin-bottom: 6px;}
+    .cpbundleq_tierSelect input {width: 16px; height: 16px;margin: 2px 0 0;}
+    .cpbundleq_tierSelect label {font-size: 18px;padding: 0 0 0 10px;}
+  
+    .cpbundleq_tierPricing {padding-left: 26px;}
+  
+    .cpbundleq_variants { margin-top: 16px; padding-top: 16px; }
+  }
+</style>
+
+<div class="cpbundleq_widgetWrap cpbundleq_loading">
+  {% capture loader %}
+    <span class="cpbundleq_loader">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 50 50" xml:space="preserve">
+        <path d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"></path>
+      </svg>
+    </span>
+  {% endcapture %}
+  <div class="cpbundleq_initLoader">
+    {{ loader }}
+  </div>
+  <div class="cpbundleq_widget cpbundleq_hide">
+    <h3 class="cpbundleq_title"></h3>
+    <div class="cpbundleq_tiers"></div>
+    <div class="cpbundleq_action">
+      <button type="button" class="cpbundleq_button">
+        <span class="cpbundleq_btnTxt">Buy now</span>
+        {{ loader }}
+      </button>
+      <p class="cpbundleq_error cpbundleq_hide"></p>
+    </div>
+  </div>
+</div>
+
+<script type="text/plain" id="cpbundleqTierMarkup">
+  {% raw %}
+    <div class="cpbundleq_tier">
+      <div class="cpbundleq_tierInner">
+        <div class="cpbundleq_tierInfo">
+          <div class="cpbundleq_tierSelect">
+            <input type="radio" name="cpbundleq_tierRad" value="[radValue]" data="[variantIds]" id="[radId]">
+            <label for="[radId]"><span class="cpbundleq_lblTxt">[label]</span><span class="cpbundleq_tag">[tag]</span></label>
+          </div>
+
+          <div class="cpbundleq_tierPricing">
+            <div class="cpbundleq_price cpbundleq_salePrice">[salePrice]</div>
+            <div class="cpbundleq_price cpbundleq_comparePrice">[price]</div>
+          </div>
+        </div>
+        <div class="cpbundleq_variants"></div>
+      </div>
+    </div>    
+  {% endraw %}
+</script>
+
+<script type="text/plain" id="cpbundleqVariantsMarkup">
+  {%- raw -%}
+    <div class="cpbundleq_variantPicker">
+      <label>[variantLabel]</label>
+      <select class="cpbundleq_variantSelect">
+        {%- endraw -%}{%- for variant in product.variants -%}{%- raw -%}
+          <option {%- endraw -%}
+            {{ 'value="' | append: variant.id | append: '"' }}
+            {{ 'data="' | append: variant.price | append: '"' }}
+            {% if variant.id == product.selected_or_first_available_variant.id %}{{ ' selected' }}{% endif %}
+          {%- raw -%}>{%- endraw -%}{{- variant.title -}}{%- raw -%}</option>
+        {%- endraw -%}{%- endfor -%}{%- raw -%}
+      </select>
+    </div>
+  {% endraw %}
+</script>
+
+{% capture rootAddUrl %}{{ routes.root_url }}{{ routes.cart_add_url }}{% endcapture %}
+
+<script type="text/javascript">
+  if(typeof cpbundleq == 'undefined') {
+    var cpbundleq = cpbundleq || {};
+    cpbundleq.shopName = {{ shop.name | handleize | json }}
+    cpbundleq.moneyFormat = {{ shop.money_format | json }}
+    cpbundleq.cartAddUrl = {{ rootAddUrl | replace: '//', '/' | json }}
+    cpbundleq.productId = {{ product.id | json }},
+    cpbundleq.collectionIds = {{ product.collections | map: 'id' | join: '||' | json }},
+    cpbundleq.hasOnlyDefaultVariant = {{ product.has_only_default_variant }};  
+    cpbundleq.currentVariant = { 
+      id: {{ product.selected_or_first_available_variant.id | json }}, 
+      price: {{ product.selected_or_first_available_variant.price | json }}
+    }  
+  }
+
+  function cpbundleq_formatMoney(cents, format) {
+    if (typeof cents == 'string') { cents = cents.replace('.', ''); }
+    var value = '';
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+    var formatString = (format || this.money_format);
+    
+    function defaultOption(opt, def) {
+      return (typeof opt == 'undefined' ? def : opt);
+    }
+    
+    function formatWithDelimiters(number, precision, thousands, decimal) {
+      precision = defaultOption(precision, 2);
+      thousands = defaultOption(thousands, ',');
+      decimal = defaultOption(decimal, '.');
+    
+      if (isNaN(number) || number == null) { return 0; }
+    
+      number = (number / 100.0).toFixed(precision);
+    
+      var parts = number.split('.'),
+        dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+        cents = parts[1] ? (decimal + parts[1]) : '';
+    
+      return dollars + cents;
+    }
+    
+    switch (formatString.match(placeholderRegex)[1]) {
+      case 'amount':
+        value = formatWithDelimiters(cents, 2);
+        break;
+      case 'amount_no_decimals':
+        value = formatWithDelimiters(cents, 0);
+        break;
+      case 'amount_with_comma_separator':
+        value = formatWithDelimiters(cents, 2, '.', ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = formatWithDelimiters(cents, 0, '.', ',');
+        break;
+    }
+    
+    return formatString.replace(placeholderRegex, value);
+  };
+
+  function cpbundleq_setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+
+  function cpbundleq_getCookie(cname) {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  function cpbundleq_initEvents() {
+    let cpbundleq_add = document.querySelectorAll('.cpbundleq_widget .cpbundleq_button');
+    cpbundleq_add.forEach(function (elem) {
+      elem.addEventListener('click', function () {
+        let _this = this;
+        if (_this.classList.contains('cpbundleq_loading')) return;
+        _this.classList.add('cpbundleq_loading');
+        
+        let parent = _this.closest('.cpbundleq_widget');
+        let selected_tier = parent.querySelector('input[name="cpbundleq_tierRad"]:checked');
+        let variant_ids = selected_tier.getAttribute('data').split('||');
+        let discount = `CQB${_this.getAttribute('data')}`;
+        let cookie_name = `cpbundleq_${cpbundleq.shopName}`;
+        parent.querySelector('.cpbundleq_error').classList.add('cpbundleq_hide');
+
+        let discounts = cpbundleq_getCookie(cookie_name) != '' ? cpbundleq_getCookie(cookie_name).split(',') : [];
+        if(discounts.indexOf(discount) == -1) {
+          discounts.push(discount);
+          cpbundleq_setCookie(cookie_name,discounts.join(','));
+        }
+
+        let unique_variants = variant_ids.filter(function(val,index){
+          return variant_ids.indexOf(val) == index;
+        });
+
+        let items_toAdd = unique_variants.map(function(val){
+          let duplicate_ids = variant_ids.filter(function(_val){
+            return val == _val
+          });  
+          return {
+            id: val,
+            quantity: duplicate_ids.length
+          }
+        });
+
+        let add_success;
+
+        fetch(cpbundleq.cartAddUrl+'.js',{
+          method: 'POST',
+          dataType: 'json',
+          body: JSON.stringify({
+            items: items_toAdd
+          }),
+          headers: {
+              'Content-Type': 'application/json'
+          }
+        })
+        .then(function(response){
+          add_success = response.ok;
+          return response.json();
+        })
+        .then(function(result) {
+          if(add_success) {
+            location.href = `/checkout?discount=${cpbundleq_getCookie(cookie_name)}`;
+            _this.classList.remove('cpbundleq_loading');
+          } else {
+            throw new Error(result.description);
+          }
+        })
+        .catch(function(e){
+          parent.querySelector('.cpbundleq_error').innerHTML = e.message;
+          parent.querySelector('.cpbundleq_error').classList.remove('cpbundleq_hide');
+          _this.classList.remove('cpbundleq_loading');
+        });
+      });
+    });
+    
+    let cpbundleq_select = document.querySelectorAll('.cpbundleq_widget .cpbundleq_variantSelect');
+    cpbundleq_select.forEach(function(elem){
+      elem.addEventListener('change',function(){
+        let parent = this.closest('.cpbundleq_tier');
+        let tier = parent.querySelector('input[name="cpbundleq_tierRad"]').value;
+        let discount = tier.split('|');
+        let ids = [];
+        let total_price = 0, sale_price;
+
+        parent.querySelectorAll('.cpbundleq_variantSelect').forEach(function(ele){
+          total_price = total_price + parseInt(ele.options[ele.selectedIndex].getAttribute('data'));
+          ids.push(ele.value);
+        });
+
+        let discount_value = parseFloat(discount[0]);
+        if(discount[1] == 'fixed') {
+          discount_value = discount_value * 100;
+          if(discount_value > total_price) {
+            sale_price = 0;
+          } else {
+            sale_price = total_price - discount_value;
+          }
+        } else {
+          sale_price = (total_price * discount_value) / 100;
+          sale_price = total_price - Math.ceil(sale_price)
+        }
+
+        parent.querySelector('.cpbundleq_salePrice').innerHTML = cpbundleq_formatMoney(sale_price, cpbundleq.moneyFormat);
+        parent.querySelector('.cpbundleq_comparePrice').innerHTML = cpbundleq_formatMoney(total_price, cpbundleq.moneyFormat);
+        parent.querySelector('input[name="cpbundleq_tierRad"]').setAttribute('data',ids.join('||'));
+      });
+    });
+    
+    let cpbundleq_radio = document.querySelectorAll('.cpbundleq_widget input[name="cpbundleq_tierRad"]');
+    cpbundleq_radio.forEach(function(elem){
+      elem.addEventListener('change',function(){
+        let parent = this.closest('.cpbundleq_widget');
+        let current_tier = this.closest('.cpbundleq_tier');
+
+        current_tier.classList.add('cpbundleq_selected');
+        parent.querySelectorAll('.cpbundleq_tier').forEach(function(ele){
+          if(ele != current_tier) ele.classList.remove('cpbundleq_selected');
+        });
+      });
+    });
+  }
+
+  function cpbundleq_build(bundle) {
+    let cpbundleq_wrap = document.querySelector('.cpbundleq_widgetWrap');
+    let widget = cpbundleq_wrap.querySelector('.cpbundleq_widget');
+    let tier_html = '';
+
+    cpbundleq_wrap.style.setProperty('--button-border-color', bundle.button_border_color || '#000000');
+    cpbundleq_wrap.style.setProperty('--button-bg-color', bundle.button_bg_color || '#000000');
+    cpbundleq_wrap.style.setProperty('--button-txt-color', bundle.button_txt_color || '#ffffff');
+    cpbundleq_wrap.style.setProperty('--button-hover-bg-color', bundle.button_hover_bg_color || '#ffffff');
+    cpbundleq_wrap.style.setProperty('--button-hover-txt-color', bundle.button_hover_txt_color || '#000000');
+    cpbundleq_wrap.style.setProperty('--tag-bg-color', bundle.tag_bg_color || '#000000');
+    cpbundleq_wrap.style.setProperty('--tag-txt-color', bundle.tag_txt_color || '#ffffff');
+    
+    if(bundle.title != "") {
+      widget.querySelector('.cpbundleq_title').innerText = bundle.title;
+    } else {
+      widget.querySelector('.cpbundleq_title').remove();
+    }
+    widget.querySelector('.cpbundleq_button').setAttribute('data',bundle.id);
+    if(typeof bundle.text_buy_now != "undefined") widget.querySelector('.cpbundleq_btnTxt').innerText = bundle.text_buy_now;
+
+    bundle.discountTiers.forEach(function(tier, index){
+      let tier_markup = document.getElementById('cpbundleqTierMarkup').innerHTML;
+      let variants_html = '', total_price = 0, total_sale_price = 0, discount;
+
+      tier_markup = tier_markup.replace(/\[radId\]/g, `cpbundleq_tier${index + 1}`);
+      tier_markup = tier_markup.replace(/\[radValue\]/g, `${tier.discount}|${bundle.discountType}`);
+      tier_markup = tier_markup.replace(/\[label\]/g, tier.label);
+      if(tier.tag != "") tier_markup = tier_markup.replace(/\[tag\]/g, tier.tag);
+
+      let variant_ids = [];
+      let qty = parseInt(tier.min_qty);
+      for(let i = 0;i < qty;i++) {
+        if(!cpbundleq.hasOnlyDefaultVariant) {
+          let variants_markup = document.getElementById('cpbundleqVariantsMarkup').innerHTML;
+          let variant_label = typeof bundle.text_variant_label != 'undefined' ? bundle.text_variant_label : 'Variant [index]' ;
+          variant_label = variant_label.replaceAll('[index]',i+1);
+          variants_markup = variants_markup.replace(/\[variantLabel\]/g, variant_label);
+          variants_html += variants_markup; 
+        }       
+        total_price = total_price+cpbundleq.currentVariant.price;
+        variant_ids.push(cpbundleq.currentVariant.id);
+      }
+      tier_markup = tier_markup.replace(/\[variantIds\]/g, variant_ids.join('||'));
+      if(bundle.discountType == "percentage")  {
+        discount = parseFloat(tier.discount);
+        discount = Math.ceil((total_price*discount)/100.00);
+        total_sale_price = total_price - discount;
+      } else {
+        discount = parseInt(tier.discount) * 100;
+        if(discount > total_price) {
+          total_sale_price = 0;
+        } else {
+          total_sale_price = total_price - discount;
+        }
+      }
+      tier_markup = tier_markup.replace(/\[salePrice\]/g, cpbundleq_formatMoney(total_sale_price,cpbundleq.moneyFormat));
+      tier_markup = tier_markup.replace(/\[price\]/g, cpbundleq_formatMoney(total_price,cpbundleq.moneyFormat));      
+      
+      tier_markup = new DOMParser().parseFromString(tier_markup, 'text/html');
+      if(cpbundleq.hasOnlyDefaultVariant) {
+        tier_markup.querySelector('.cpbundleq_variants').remove();
+      } else {
+        tier_markup.querySelector('.cpbundleq_variants').innerHTML = variants_html;
+      }
+      if(tier.tag == "") tier_markup.querySelector('.cpbundleq_tag').remove();
+      
+      tier_html += tier_markup.querySelector('.cpbundleq_tier').outerHTML;
+    });
+
+    widget.querySelector('.cpbundleq_tiers').innerHTML = tier_html;
+    
+    widget.querySelector('.cpbundleq_tier:first-child').classList.add('cpbundleq_selected');
+    widget.querySelector('.cpbundleq_tier:first-child input[name="cpbundleq_tierRad"]').checked = true;
+
+    cpbundleq_initEvents();
+  }
+  
+  document.addEventListener('DOMContentLoaded', function(){
+    let cpbundleq_wrap = document.querySelector('.cpbundleq_widgetWrap');
+    if(cpbundleq_wrap != null) {
+      let cpbundleq_widget = cpbundleq_wrap.querySelector('.cpbundleq_widget');
+      
+      fetch('/apps/ca/productQBundle', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          product_id: String(cpbundleq.productId),
+          collection_ids: cpbundleq.collectionIds
+        })
+      })   
+      .then(function(response){
+        if(response.ok) {
+          return response.json()
+        }
+        throw new Error('Something went wrong');
+      })
+      .then(function(result){
+        if(result.success && result.data != null) {
+          cpbundleq_build(result.data);
+          cpbundleq_widget.classList.remove('cpbundleq_hide');
+          cpbundleq_wrap.classList.remove('cpbundleq_loading');
+        } else {
+          throw new Error('Couldn\'t fetch data');
+        }
+      })
+      .catch(function(e){
+        console.log(e);
+        cpbundleq_wrap.classList.remove('cpbundleq_loading');
+      });
+    }
+  });
+</script>
