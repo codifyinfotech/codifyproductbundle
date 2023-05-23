@@ -298,13 +298,25 @@
           } else {
             sale_price = total_price - discount_value;
           }
-        } else {
+        } else if(discount[1] == 'percentage') {
           sale_price = (total_price * discount_value) / 100;
           sale_price = total_price - Math.ceil(sale_price)
+        } else {
+          discount_value = discount_value * 100;
+          if(discount_value > total_price) {
+              sale_price = total_price;
+          } else {
+              sale_price = discount_value;
+          }
         }
 
         parent.querySelector('.cpbundleq_salePrice').innerHTML = cpbundleq_formatMoney(sale_price, cpbundleq.moneyFormat);
         parent.querySelector('.cpbundleq_comparePrice').innerHTML = cpbundleq_formatMoney(total_price, cpbundleq.moneyFormat);
+        if(sale_price >= total_price) {
+            parent.querySelector('.cpbundleq_comparePrice').classList.add('cpbundleq_hide');
+        } else {
+            parent.querySelector('.cpbundleq_comparePrice').classList.remove('cpbundleq_hide');
+        }
         parent.querySelector('input[name="cpbundleq_tierRad"]').setAttribute('data',ids.join('||'));
       });
     });
@@ -372,12 +384,19 @@
         discount = parseFloat(tier.discount);
         discount = Math.ceil((total_price*discount)/100.00);
         total_sale_price = total_price - discount;
-      } else {
-        discount = parseInt(tier.discount) * 100;
+      } else if(bundle.discountType == "fixed") {
+        discount = parseFloat(tier.discount) * 100;
         if(discount > total_price) {
           total_sale_price = 0;
         } else {
           total_sale_price = total_price - discount;
+        }
+      } else {
+        discount = parseFloat(tier.discount) * 100;
+        if(discount > total_price) {
+          total_sale_price = total_price;
+        } else {
+          total_sale_price = discount;
         }
       }
       tier_markup = tier_markup.replace(/\[salePrice\]/g, cpbundleq_formatMoney(total_sale_price,cpbundleq.moneyFormat));
@@ -390,6 +409,11 @@
         tier_markup.querySelector('.cpbundleq_variants').innerHTML = variants_html;
       }
       if(tier.tag == "") tier_markup.querySelector('.cpbundleq_tag').remove();
+      if(total_sale_price >= total_price) {
+        tier_markup.querySelector('.cpbundleq_comparePrice').classList.add('cpbundleq_hide');
+      } else {
+        tier_markup.querySelector('.cpbundleq_comparePrice').classList.remove('cpbundleq_hide');
+      }
       
       tier_html += tier_markup.querySelector('.cpbundleq_tier').outerHTML;
     });
