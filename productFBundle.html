@@ -467,9 +467,9 @@
           if(current_variant == null) current_variant = _nodes[0];
         }
   
-        let price = parseFloat(current_variant.price) * 100;
+        let price = Math.round(parseFloat(current_variant.price) * 100);
         let compare_price = 0;
-        if(current_variant.compareAtPrice != null) compare_price = parseFloat(current_variant.compareAtPrice) * 100;
+        if(current_variant.compareAtPrice != null) compare_price = Math.round(parseFloat(current_variant.compareAtPrice) * 100);
   
         product_markup = product_markup.replace(/\[variantId\]/gi, current_variant.id.replace('gid://shopify/ProductVariant/',''));
         product_markup = product_markup.replace(/\[variantPrice\]/gi, price);
@@ -489,9 +489,9 @@
             text_node = document.createTextNode(variant.title);
             node.appendChild(text_node);
             node.setAttribute('value', variant.id.replace('gid://shopify/ProductVariant/',''));
-            node.setAttribute('data-price', parseFloat(variant.price) * 100);
+            node.setAttribute('data-price', Math.round(parseFloat(variant.price) * 100));
             node.setAttribute('data-avail', variant.availableForSale);
-            if(variant.compareAtPrice != null) node.setAttribute('data-cprice', parseFloat(variant.compareAtPrice) * 100);
+            if(variant.compareAtPrice != null) node.setAttribute('data-cprice', Math.round(parseFloat(variant.compareAtPrice) * 100));
             if(variant.id == current_variant.id) node.setAttribute('selected', true);
             product_markup.querySelector('.cpbundlef_select').appendChild(node);
           });
@@ -500,7 +500,7 @@
         if(index+1 >= products.length) product_markup.querySelector('.cpbundlef_plusIcon').remove();
   
         document.querySelector('.cpbundlef_products').insertAdjacentHTML('beforeend', product_markup.querySelector('.cpbundlef_product').outerHTML);
-        total_price = total_price+(parseFloat(current_variant.price) * 100);
+        total_price = total_price+price;
       });
       cpbundlef_calPrice(document.querySelector('.cpbundlef_widgetWrap'));
       cpbundlef_updateBtn(document.querySelector('.cpbundlef_widgetWrap'));
