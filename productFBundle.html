@@ -1,0 +1,737 @@
+<style>
+  .cpbundlef_widgetWrap {
+    --button-border-color: #000000;
+    --button-bg-color: #000000;
+    --button-txt-color: #ffffff;
+    --button-hover-bg-color: #ffffff;
+    --button-hover-txt-color: #000000;
+    --bundle-size: 780px;
+    --small-bundle-size: 660px;
+  }
+  .cpbundlef_widgetWrap { padding: 0 20px; margin: 28px 0; }
+  .cpbundlef_widgetWrap, .cpbundlef_widgetWrap * { box-sizing: border-box; }
+  .cpbundlef_widget .cpbundlef_hide {display: none !important;}
+  .cpbundlef_widget .cpbundlef_error {color: #f33;line-height: normal;font-size:14px;margin:4px 0 0;text-align: center;}
+  .cpbundlef_widget .cpbundlef_products {flex: 0 1 var(--small-bundle-size);}
+  .cpbundlef_widget .cpbundlef_button { background-color: var(--button-bg-color);color: var(--button-txt-color);border: 1px solid var(--button-border-color);}
+  .cpbundlef_widget .cpbundlef_button:hover { background-color: var(--button-hover-bg-color);color: var(--button-hover-txt-color);}
+  .cpbundlef_widget .cpbundlef_title { margin: 0; font-size: 22px;line-height: normal; }
+  .cpbundlef_widget .cpbundlef_inner { margin-top: 20px;display: flex; flex-wrap: wrap; align-items: center; overflow: hidden; }
+  .cpbundlef_widget .cpbundlef_products { display: flex; flex-wrap: wrap; margin-bottom: -16px; margin-right: -20px; }
+  .cpbundlef_widget .cpbundlef_product { flex: 1 1 50%; padding-right: 20px; padding-bottom: 16px; position: relative; }
+  .cpbundlef_widget .cpbundlef_img img { display: block; margin: auto; max-width: 130px; max-height: 130px; object-fit: contain; width: 100%; }
+  .cpbundlef_widget .cpbundlef_select { width: 100%; background: url(https://cdn.shopify.com/s/files/1/0586/4246/4802/files/down-arrow.svg?v=1681364743) no-repeat right 6px center; padding: 6px 16px 6px 10px; font-size: 14px; border: 1px solid currentColor; height: auto; appearance: none; -webkit-appearance: none; }
+  .cpbundlef_widget .cpbundlef_lnk,.cpbundlef_widget .cpbundlef_lnk:hover { text-decoration: none; color: inherit; }
+  .cpbundlef_widget .cpbundlef_summery { width: 100%; padding-top: 16px; }
+  .cpbundlef_widget .cpbundlef_button { font-size: 16px; width: 100%; line-height: normal; border-radius: 4px; padding: 8px 12px; cursor: pointer; text-align: center; }
+  .cpbundlef_widget .cpbundlef_pInner { border: 1px solid #d3d3d3; padding: 10px; border-radius: 4px; height: 100%; position: relative; user-select: none; opacity: 0.6; }
+  .cpbundlef_widget .cpbundlef_plusIcon { position: absolute; top: calc(50% - 10px); right: 3px; } 
+  .cpbundlef_widget .cpbundlef_plusIcon svg {width: 14px; height: 14px; fill: currentColor; display: block; }
+  .cpbundlef_widget .cpbundlef_chk { position: absolute; top: 8px; right: 8px; z-index: 2; } 
+  .cpbundlef_widget .cpbundlef_chkInput { width: auto; margin: 0; opacity: 0; display: block; position: absolute; cursor: pointer; }
+  .cpbundlef_widget .cpbundlef_chkbox { display: block; cursor: pointer; width: 24px; height: 24px; border: 1px solid #d3d3d3; background-color: #fff; padding: 4px; border-radius: 4px; }
+  .cpbundlef_widget .cpbundlef_chkbox .cpbundlef_icon {display: none;}
+  .cpbundlef_widget .cpbundlef_chkbox svg { width: 14px; height: 14px; display: block; }
+  .cpbundlef_widget .cpbundlef_chkbox svg path { stroke: currentColor; stroke-width: 3px; stroke-linecap: round; }
+  .cpbundlef_widget .cpbundlef_chkInput:checked + .cpbundlef_chkbox .cpbundlef_icon {display: block;}
+  .cpbundlef_widget .cpbundlef_product.cpbundlef_selected .cpbundlef_pInner { opacity: 1; }
+  .cpbundlef_widget .cpbundlef_pTitle { font-size: 16px; line-height: normal; margin: 0 0 4px; } 
+  .cpbundlef_widget .cpbundlef_img { margin-bottom: 12px; } 
+  .cpbundlef_widget .cpbundlef_pricing { font-size: 16px; line-height: normal; margin-bottom: 6px; } 
+  .cpbundlef_widget .cpbundlef_pricing span { font-size: inherit; line-height: inherit; margin-right: 2px; display: inline-block; vertical-align: top; } 
+  .cpbundlef_widget .cpbundlef_pricing:not(.cpbundlef_sold) .cpbundlef_soldOut {display: none;}
+  .cpbundlef_widget .cpbundlef_pricing .cpbundlef_soldOut { font-size: 12px; padding: 2px 8px; border: 1px solid currentColor; border-radius: 10px; line-height: normal; letter-spacing: normal; }
+  .cpbundlef_widget .cpbundlef_cPrice, .cpbundlef_cPrice * { text-decoration: line-through; }
+  .cpbundlef_widget .cpbundlef_button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .cpbundlef_widget .cpbundlef_pricing:not(.cpbundlef_sale) .cpbundlef_cPrice { display: none; }
+  .cpbundlef_widgetWrap .cpbundlef_loader { padding: 40px 0; }
+  .cpbundlef_widgetWrap .cpbundlef_spinner svg {fill:currentColor;animation:.5s linear infinite spin;display: inline-block; vertical-align: middle;}
+  .cpbundlef_widget .cpbundlef_priceLabel {display: inline-block;margin-right: 4px;margin-bottom: 4px;line-height: normal;}
+  .cpbundlef_widget .cpbundlef_price {display: inline-block;line-height: normal;}
+  .cpbundlef_widget .cpbundlef_tPrice {display: inline-block;margin-right: 4px;margin-bottom: 4px;font-size: 18px;line-height: normal;}
+  .cpbundlef_widget .cpbundlef_tcPrice {display: inline-block;margin-bottom: 4px;line-height: normal;}
+  .cpbundlef_widgetWrap.cpbundlef_loading .cpbundlef_widget {display: none;}
+  .cpbundlef_widgetWrap:not(.cpbundlef_loading) .cpbundlef_loader {display: none;}
+  .cpbundlef_widget .cpbundlef_button .cpbundlef_spinner svg { width: 22px; height: 22px; }
+  .cpbundlef_widget .cpbundlef_button.cpbundlef_btnLoading {padding-top: 6px;padding-bottom: 6px;opacity: 0.6;cursor: not-allowed;}
+  .cpbundlef_widget .cpbundlef_button.cpbundlef_btnLoading .cpbundlef_btnTxt {display: none;}
+  .cpbundlef_widget .cpbundlef_button:not(.cpbundlef_btnLoading) .cpbundlef_spinner {display: none;}
+  .cpbundlef_widget .cpbundlef_subTitle { margin: 10px 0 0; font-size: 18px; line-height: normal; }
+  .cpbundlef_widget .cpbundlef_totalPrice {text-align: center;}
+  .cpbundlef_widget .cpbundlef_price[data-sale="false"] .cpbundlef_tcPrice {display: none;}
+  .cpbundlef_widget .cpbundlef_price .cpbundlef_tcPrice {text-decoration: line-through;}
+   
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  
+  @media (min-width: 480px) {
+    .cpbundlef_widget .cpbundlef_product { max-width: 220px; }
+    .cpbundlef_widget .cpbundlef_products { margin-right: 0; }
+    .cpbundlef_widget .cpbundlef_totalPrice {text-align: left;}
+    .cpbundlef_widget .cpbundlef_summery {width: auto;}
+    .cpbundlef_widget .cpbundlef_summery .cpbundlef_button {max-width: 300px;min-width: 200px;}
+    .cpbundlef_widget .cpbundlef_product { flex: 1 1 100%; }
+    .cpbundlef_widget .cpbundlef_pInner {padding: 12px;}
+    .cpbundlef_widget .cpbundlef_img { margin-bottom: 16px; }
+    .cpbundlef_widget .cpbundlef_pTitle { margin-bottom: 8px; }
+    .cpbundlef_widget .cpbundlef_error {text-align: left;}
+  }
+  
+  @media (min-width: 600px) {
+    .cpbundlef_widgetWrap { padding: 0 30px;}
+    .cpbundlef_widget .cpbundlef_inner { margin-top: 24px; }
+    .cpbundlef_widget .cpbundlef_subTitle { margin-top: 12px; } 
+  }
+
+  @media (min-width: 768px) {
+    .cpbundlef_widgetWrap { margin: 36px 0;}
+  }
+  
+  @media (min-width: 1140px) {
+    .cpbundlef_widget .cpbundlef_products {flex: 0 1 var(--bundle-size);}
+    .cpbundlef_widget .cpbundlef_product { max-width: 260px; padding-right: 30px; }   
+    .cpbundlef_widget .cpbundlef_img img { max-width: 160px; max-height: 160px; }
+    .cpbundlef_widget .cpbundlef_plusIcon {right: 5px;}
+    .cpbundlef_widget .cpbundlef_plusIcon svg {width: 20px; height: 20px; }
+  }
+  
+  @media (max-width: 479px) {
+    .cpbundlef_widget .cpbundlef_product:nth-child(2n) .cpbundlef_plusIcon { display: none; }
+  }
+</style>
+<div class="cpbundlef_widgetWrap cpbundlef_loading">
+  {% capture plus_icon %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill-rule="evenodd"><path fill-rule="evenodd" d="M 11 2 L 11 11 L 2 11 L 2 13 L 11 13 L 11 22 L 13 22 L 13 13 L 22 13 L 22 11 L 13 11 L 13 2 Z"/></svg>
+  {% endcapture %}
+  
+  {% capture loading_icon %}
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 50 50" xml:space="preserve">
+        <path d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"></path>
+    </svg>
+  {% endcapture %}
+  
+  {% capture check_icon %}
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.5 11.1463L6.2561 15.5366L16.5 2" stroke="black" />
+    </svg>
+  {% endcapture %}
+  <div class="cpbundlef_loader cpbundlef_spinner">{{ loading_icon }}</div>    
+  <div class="cpbundlef_widget">
+    <h3 class="cpbundlef_title"></h3>
+    <p class="cpbundlef_subTitle"></p>
+    <div class="cpbundlef_inner">
+      <div class="cpbundlef_products">
+        {% liquid
+          assign current_variant = product.first_available_variant
+          assign all_avail = true
+          if current_variant == blank
+              assign current_variant = product.variants[0]
+          endif
+          unless current_variant.available
+              assign all_avail = false
+          endunless
+          assign total_price = current_variant.price
+        %}
+        <div class="cpbundlef_product cpbundlef_selected">
+          <div class="cpbundlef_pInner">
+            <div class="cpbundlef_chk">
+              <input type="checkbox" id="chkMain" data-id="{{ current_variant.id }}" data-price="{{ current_variant.price }}" class="cpbundlef_chkInput" onChange="cpbundlef_check(this)" checked />
+              <label class="cpbundlef_chkbox" for="chkMain">
+                  <span class="cpbundlef_icon">{{ check_icon }}</span>
+              </label>
+            </div>
+            {% if product.featured_image %}
+              <div class="cpbundlef_img">
+                <img src="{{ product.featured_image | image_url: width: 160, height: 160 }}" width="160" height="160" loading="lazy" />
+              </div>
+            {% endif %}
+            <div class="cpbundlef_info">
+              <h4 class="cpbundlef_pTitle">{{ product.title }}</h4>
+              <div class="cpbundlef_pricing{% if current_variant.compare_at_price > current_variant.price %} cpbundlef_sale{% endif %}{% unless current_variant.available %} cpbundlef_sold{% endunless %}">
+                <span class="cpbundlef_rPrice">{{ current_variant.price | money }}</span>
+                <span class="cpbundlef_cPrice">{{ current_variant.compare_at_price | money }}</span>
+                <span class="cpbundlef_soldOut">Sold out</span>
+              </div>
+              {% unless product.has_only_default_variant %}
+                <div class="cpbundlef_variants">
+                  <select class="cpbundlef_select" onChange="cpbundlef_changeVariant(this)">
+                    {% for variant in product.variants %}
+                      <option value="{{ variant.id }}" data-price="{{ variant.price }}"{% if variant.compare_at_price > variant.price %} data-cprice="{{ variant.compare_at_price }}"{% endif %} data-avail="{{ variant.available }}"{% if variant.id == current_variant.id %} selected{% endif %}>{{ variant.title }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endunless %}
+            </div>
+          </div>
+          <span class="cpbundlef_plusIcon">{{ plus_icon }}</span>
+        </div>
+
+        {% liquid
+          assign counter = 0
+          assign p_collection = ''
+          assign limit = 4
+          for _collection in product.collections
+              if _collection.all_products_count >= 2
+                  assign p_collection = _collection
+                  break
+              endif
+          endfor          
+          if p_collection == blank
+              if collections['all'].all_products_count > 2
+                  assign p_collection = collections['all']
+              endif
+          endif                            
+        %}
+        {% if p_collection != blank %}
+          {% for b_product in p_collection.products %}
+            {% liquid
+              if counter >= limit 
+                  break 
+              endif
+              if b_product.handle == product.handle 
+                  continue 
+              endif
+              assign counter = counter | plus: 1
+              assign current_variant = b_product.selected_or_first_available_variant
+              assign total_price = total_price | plus: current_variant.price
+              unless current_variant.available
+                  assign all_avail = false
+              endunless
+            %}
+  
+            <div class="cpbundlef_product cpbundlef_selected cpbundlef_productDefault">
+              <div class="cpbundlef_pInner">
+                <div class="cpbundlef_chk">
+                  <input type="checkbox" id="chk{{ forloop.index }}" data-id="{{ current_variant.id }}" data-price="{{ current_variant.price }}" class="cpbundlef_chkInput" onChange="cpbundlef_check(this)" checked />
+                  <label class="cpbundlef_chkbox" for="chk{{ forloop.index }}">
+                      <span class="cpbundlef_icon">{{ check_icon }}</span>
+                  </label>
+                </div>
+                {% if b_product.featured_image %}
+                  <div class="cpbundlef_img">
+                    <a href="{{ b_product.url }}" class="cpbundlef_lnk">
+                      <img src="{{ b_product.featured_image | image_url: width: 160, height: 160 }}" width="160" height="160" loading="lazy" />
+                    </a>
+                  </div>
+                {% endif %}
+                <div class="cpbundlef_info">
+                  <h4 class="cpbundlef_pTitle">
+                    <a href="{{ b_product.url }}" class="cpbundlef_lnk">{{ b_product.title }}</a>
+                  </h4>
+                  <div class="cpbundlef_pricing{% if current_variant.compare_at_price > current_variant.price %} cpbundlef_sale{% endif %}{% unless current_variant.available %} cpbundlef_sold{% endunless %}">
+                    <span class="cpbundlef_rPrice">{{ current_variant.price | money }}</span>
+                    <span class="cpbundlef_cPrice">{{ current_variant.compare_at_price | money }}</span>
+                    <span class="cpbundlef_soldOut">Sold out</span>
+                  </div>
+                  {% unless b_product.has_only_default_variant %}
+                    <div class="cpbundlef_variants">
+                      <select class="cpbundlef_select" onChange="cpbundlef_changeVariant(this)">
+                        {% for variant in b_product.variants %}
+                          <option value="{{ variant.id }}" data-price="{{ variant.price }}"{% if variant.compare_at_price > variant.price %} data-cprice="{{ variant.compare_at_price }}"{% endif %} data-avail="{{ variant.available }}"{% if variant.id == current_variant.id %} selected{% endif %}>{{ variant.title }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% endunless %}
+                </div>
+              </div>
+              {% if counter < limit %}  
+                <span class="cpbundlef_plusIcon">{{ plus_icon }}</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="cpbundlef_summery">
+        <div class="cpbundlef_totalPrice">
+          <label class="cpbundlef_priceLabel">Total price:</label>
+          <span class="cpbundlef_price" data-sale="false">
+            <span class="cpbundlef_tPrice">{{ total_price | money }}</span>
+            <span class="cpbundlef_tcPrice">{{ total_price | money }}</span>
+          </span>
+        </div>
+        <button type="button" class="cpbundlef_button cpbundlef_add"{% unless all_avail %} disabled{% endunless %} onClick="cpbundlef_addBundle(this)"><span class="cpbundlef_btnTxt">Add to cart</span><span class="cpbundlef_spinner">{{ loading_icon }}</span></button>
+        <p class="cpbundlef_error"></p>
+      </div>
+    </div>    
+  </div>
+
+  <script type="text/plain" id="cpbundlefProductMarkup">
+      {% raw %}
+          <div class="cpbundlef_product cpbundlef_selected">
+              <div class="cpbundlef_pInner">
+                  <div class="cpbundlef_chk">
+                      <input type="checkbox" id="chk[index]" data-id="[variantId]" data-price="[variantPrice]" class="cpbundlef_chkInput" onchange="cpbundlef_check(this)" checked>
+                      <label class="cpbundlef_chkbox" for="chk[index]">
+                          <span class="cpbundlef_icon">
+                              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M1.5 11.1463L6.2561 15.5366L16.5 2" stroke="black"></path>
+                              </svg>
+                          </span>
+                      </label>
+                  </div>
+                  <div class="cpbundlef_img"><a href="[url]" class="cpbundlef_lnk"><img src="[imgURL]"></a></div>
+                  <div class="cpbundlef_info">
+                      <h4 class="cpbundlef_pTitle"><a href="[url]" class="cpbundlef_lnk">[title]</a></h4>
+                      <div class="cpbundlef_pricing">
+                          <span class="cpbundlef_rPrice">[price]</span>
+                          <span class="cpbundlef_cPrice">[comparePrice]</span>
+                          <span class="cpbundlef_soldOut">Sold out</span>
+                      </div>                        
+                      <div class="cpbundlef_variants"><select class="cpbundlef_select" onchange="cpbundlef_changeVariant(this)"></select></div>
+                  </div>
+              </div>
+              <span class="cpbundlef_plusIcon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill-rule="evenodd"><path fill-rule="evenodd" d="M 11 2 L 11 11 L 2 11 L 2 13 L 11 13 L 11 22 L 13 22 L 13 13 L 22 13 L 22 11 L 13 11 L 13 2 Z"></path></svg></span>
+          </div>
+      {% endraw %}
+  </script>
+
+  {% capture rootAddUrl %}{{ routes.root_url }}{{ routes.cart_add_url }}{% endcapture %}
+  <script type="text/javascript">
+    if(typeof cpbundlef == 'undefined') {
+      var cpbundlef = cpbundlef || {};
+      cpbundlef.cartAddUrl = {{ rootAddUrl | replace: '//', '/' | json }};
+      cpbundlef.moneyFormat = {{ shop.money_format | json }};
+      cpbundlef.handle = {{ product.handle | json }};
+      cpbundlef.id = {{ product.id | json }};
+    }
+
+    function cpbundlef_formatMoney(cents, format) {
+      if (typeof cents == 'string') { cents = cents.replace('.', ''); }
+      var value = '';
+      var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+      var formatString = (format || this.money_format);
+  
+      function defaultOption(opt, def) {
+        return (typeof opt == 'undefined' ? def : opt);
+      }
+  
+      function formatWithDelimiters(number, precision, thousands, decimal) {
+        precision = defaultOption(precision, 2);
+        thousands = defaultOption(thousands, ',');
+        decimal = defaultOption(decimal, '.');
+  
+        if (isNaN(number) || number == null) { return 0; }
+  
+        number = (number / 100.0).toFixed(precision);
+  
+        var parts = number.split('.'),
+            dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+            cents = parts[1] ? (decimal + parts[1]) : '';
+  
+        return dollars + cents;
+      }
+  
+      switch (formatString.match(placeholderRegex)[1]) {
+        case 'amount':
+          value = formatWithDelimiters(cents, 2);
+          break;
+        case 'amount_no_decimals':
+          value = formatWithDelimiters(cents, 0);
+          break;
+        case 'amount_with_comma_separator':
+          value = formatWithDelimiters(cents, 2, '.', ',');
+          break;
+        case 'amount_no_decimals_with_comma_separator':
+          value = formatWithDelimiters(cents, 0, '.', ',');
+          break;
+      }
+      return formatString.replace(placeholderRegex, value);
+    };
+
+    function cpbundlef_calPrice(parent) {
+      let total_price = 0;
+      let selected_boxes = parent.querySelectorAll('.cpbundlef_product .cpbundlef_chkInput:checked');
+      let min_price = -1, price;
+      if(selected_boxes.length > 0) {
+        selected_boxes.forEach(function(box){
+          price = parseInt(box.getAttribute('data-price'));
+          if(min_price == -1 || min_price > price) min_price = price;
+          total_price = total_price + price;
+        });
+      }
+      
+      if(cpbundlef.bundle.discountEnable) {
+        const min_threshold = parseInt(cpbundlef.bundle.minThreshold);
+        if(selected_boxes.length >= min_threshold) {
+          const discount = parseFloat(cpbundlef.bundle.discount);
+          let total_discount = 0;
+          if(cpbundlef.bundle.discountType == 'percentage') {
+            total_discount = (total_price * discount) / 100;
+          } else if(cpbundlef.bundle.discountType == 'fixed') {
+            total_discount = discount * 100;
+            if(total_discount > total_price) total_discount = total_price;
+          } else if(cpbundlef.bundle.discountType == 'free') {
+            if(min_price != -1) total_discount = min_price;
+            const cheapest_item = parent.querySelector('.cpbundlef_product .cpbundlef_chkInput[data-price="'+min_price+'"]');
+            parent.querySelectorAll('.cpbundlef_product').forEach(function(elem){elem.classList.remove('cpbundlef_cheapest')});
+            if(cheapest_item != null) cheapest_item.closest('.cpbundlef_product').classList.add('cpbundlef_cheapest');
+          } else if(cpbundlef.bundle.discountType == 'free_shipping') {
+            parent.querySelector('.cpbundlef_tcPrice').remove();
+          }
+          const sale_price = Math.ceil(total_price - total_discount);
+          parent.querySelector('.cpbundlef_tPrice').innerHTML = cpbundlef_formatMoney(sale_price, cpbundlef.moneyFormat);
+          if(parent.querySelector('.cpbundlef_tcPrice') != null) parent.querySelector('.cpbundlef_tcPrice').innerHTML = cpbundlef_formatMoney(total_price, cpbundlef.moneyFormat);
+          parent.querySelector('.cpbundlef_price').setAttribute("data-sale", "true");
+        } else {
+          parent.querySelector('.cpbundlef_tPrice').innerHTML = cpbundlef_formatMoney(total_price, cpbundlef.moneyFormat);            
+          parent.querySelector('.cpbundlef_price').setAttribute("data-sale", "false");
+        }
+      } else {
+        parent.querySelector('.cpbundlef_tPrice').innerHTML = cpbundlef_formatMoney(total_price, cpbundlef.moneyFormat);
+      }
+    }
+
+    function cpbundlef_updateBtn(parent) {
+      let selected_boxes = parent.querySelectorAll('.cpbundlef_product .cpbundlef_chkInput:checked');
+      let sold_count = 0;
+      selected_boxes.forEach(function(chk){
+        let _parent = chk.closest('.cpbundlef_product');
+        if(_parent.querySelector('.cpbundlef_pricing').classList.contains('cpbundlef_sold')) sold_count++;
+      });
+      if(selected_boxes.length == 0 || sold_count > 0) {
+        parent.querySelector('.cpbundlef_add').setAttribute('disabled', true);
+      } else {
+        parent.querySelector('.cpbundlef_add').removeAttribute('disabled');
+      }
+    }
+    
+    function cpbundlef_check(chk) {
+      let parent = chk.closest('.cpbundlef_widgetWrap');
+      
+      if(chk.checked) {
+        chk.closest('.cpbundlef_product').classList.add('cpbundlef_selected');
+      } else {
+        chk.closest('.cpbundlef_product').classList.remove('cpbundlef_selected');
+      }
+  
+      cpbundlef_calPrice(parent);
+      cpbundlef_updateBtn(parent);
+    }
+
+    function cpbundlef_changeVariant(select) {
+      let parent = select.closest('.cpbundlef_widget');
+      let product_box = select.closest('.cpbundlef_product');
+      let selected_opt = select.options[select.selectedIndex];
+      let price = parseInt(selected_opt.getAttribute('data-price'));
+      let compare_price = selected_opt.hasAttribute('data-cprice') ? parseInt(selected_opt.getAttribute('data-cprice')) : 0;
+      
+      if(compare_price > price) {
+        product_box.querySelector('.cpbundlef_pricing').classList.add('cpbundlef_sale');
+      } else {
+        product_box.querySelector('.cpbundlef_pricing').classList.remove('cpbundlef_sale');
+      }
+  
+      if(selected_opt.getAttribute('data-avail') == 'true') {
+        product_box.querySelector('.cpbundlef_pricing').classList.remove('cpbundlef_sold');
+      } else {
+        product_box.querySelector('.cpbundlef_pricing').classList.add('cpbundlef_sold');
+      }
+  
+      product_box.querySelector('.cpbundlef_rPrice').innerHTML = cpbundlef_formatMoney(price, cpbundlef.moneyFormat);
+      product_box.querySelector('.cpbundlef_cPrice').innerHTML = cpbundlef_formatMoney(compare_price, cpbundlef.moneyFormat);
+      product_box.querySelector('.cpbundlef_chkInput').setAttribute('data-price', price);
+      product_box.querySelector('.cpbundlef_chkInput').setAttribute('data-id', select.value);
+      cpbundlef_calPrice(parent);
+      cpbundlef_updateBtn(parent);
+    }
+    
+    function cpbundlef_addProducts(products) {
+      document.querySelectorAll('.cpbundlef_productDefault').forEach(function(elm){ elm.remove(); });
+      let total_price = parseInt(document.querySelector('.cpbundlef_chkInput').getAttribute('data-price'));
+    
+      products.forEach(function(product, index){
+        let product_markup = document.getElementById('cpbundlefProductMarkup').innerHTML;
+        let img_params = "height=160&width=160&crop=center";
+        let img_url = product.images.nodes[0].url;
+        if(img_url.indexOf('?') >= 0) {
+            img_url = img_url+"&"+img_params;
+        } else {
+            img_url = img_url+"?"+img_params;
+        }
+  
+        product_markup = product_markup.replace(/\[title\]/gi, product.title);
+        product_markup = product_markup.replace(/\[url\]/gi, '/products/'+product.handle);
+        product_markup = product_markup.replace(/\[imgURL\]/gi, img_url);
+        product_markup = product_markup.replace(/\[index\]/gi, index);
+  
+        let current_variant = null;
+        if(product.hasOnlyDefaultVariant) {
+          current_variant = product.variants.nodes[0];
+        } else {
+          let _nodes = product.variants.nodes;
+          for(let i = 0;i < _nodes.length;i++) {
+            if(_nodes[i].availableForSale) {
+              current_variant = _nodes[i];
+              break;
+            }
+          }
+          if(current_variant == null) current_variant = _nodes[0];
+        }
+  
+        let price = parseFloat(current_variant.price) * 100;
+        let compare_price = 0;
+        if(current_variant.compareAtPrice != null) compare_price = parseFloat(current_variant.compareAtPrice) * 100;
+  
+        product_markup = product_markup.replace(/\[variantId\]/gi, current_variant.id.replace('gid://shopify/ProductVariant/',''));
+        product_markup = product_markup.replace(/\[variantPrice\]/gi, price);
+        product_markup = product_markup.replace(/\[price\]/gi, cpbundlef_formatMoney(price, cpbundlef.moneyFormat));
+        product_markup = product_markup.replace(/\[comparePrice\]/gi, cpbundlef_formatMoney(compare_price, cpbundlef.moneyFormat));
+  
+        product_markup = new DOMParser().parseFromString(product_markup, 'text/html');
+  
+        if(compare_price > price) product_markup.querySelector('.cpbundlef_pricing').classList.add('cpbundlef_sale');
+        if(!current_variant.availableForSale) product_markup.querySelector('.cpbundlef_pricing').classList.add('cpbundlef_sold');
+        if(product.hasOnlyDefaultVariant) {
+          product_markup.querySelector('.cpbundlef_variants').remove();
+        } else {
+          let node, text_node;
+          product.variants.nodes.forEach(function(variant){
+            node = document.createElement("option");
+            text_node = document.createTextNode(variant.title);
+            node.appendChild(text_node);
+            node.setAttribute('value', variant.id.replace('gid://shopify/ProductVariant/',''));
+            node.setAttribute('data-price', parseFloat(variant.price) * 100);
+            node.setAttribute('data-avail', variant.availableForSale);
+            if(variant.compareAtPrice != null) node.setAttribute('data-cprice', parseFloat(variant.compareAtPrice) * 100);
+            if(variant.id == current_variant.id) node.setAttribute('selected', true);
+            product_markup.querySelector('.cpbundlef_select').appendChild(node);
+          });
+        }
+  
+        if(index+1 >= products.length) product_markup.querySelector('.cpbundlef_plusIcon').remove();
+  
+        document.querySelector('.cpbundlef_products').insertAdjacentHTML('beforeend', product_markup.querySelector('.cpbundlef_product').outerHTML);
+        total_price = total_price+(parseFloat(current_variant.price) * 100);
+      });
+      cpbundlef_calPrice(document.querySelector('.cpbundlef_widgetWrap'));
+      cpbundlef_updateBtn(document.querySelector('.cpbundlef_widgetWrap'));
+    }
+
+    function cpbundlef_build(bundle) {
+      let cpbundlef_wrap = document.querySelector('.cpbundlef_widgetWrap');
+      let limit = 1;
+      cpbundlef.bundle = bundle;
+
+      cpbundlef_wrap.style.setProperty('--button-border-color', bundle.button_border_color || '#000000');
+      cpbundlef_wrap.style.setProperty('--button-bg-color', bundle.button_bg_color || '#000000');
+      cpbundlef_wrap.style.setProperty('--button-txt-color', bundle.button_txt_color || '#ffffff');
+      cpbundlef_wrap.style.setProperty('--button-hover-bg-color', bundle.button_hover_bg_color || '#ffffff');
+      cpbundlef_wrap.style.setProperty('--button-hover-txt-color', bundle.button_hover_txt_color || '#000000');
+
+      cpbundlef_wrap.querySelector('.cpbundlef_title').innerHTML = bundle.title;
+      if(bundle.discountEnable && bundle.discountText != '') {
+        cpbundlef_wrap.querySelector('.cpbundlef_subTitle').innerHTML = bundle.discountText;  
+      } else {
+        cpbundlef_wrap.querySelector('.cpbundlef_subTitle').remove();
+      }
+      if(typeof bundle.text_add_to_cart != 'undefined') cpbundlef_wrap.querySelector('.cpbundlef_add .cpbundlef_btnTxt').innerText = bundle.text_add_to_cart;
+      if(typeof bundle.text_price_label != 'undefined') cpbundlef_wrap.querySelector('.cpbundlef_totalPrice .cpbundlef_priceLabel').innerText = bundle.text_price_label+':';
+      if(bundle.extraClass != '') cpbundlef_wrap.classList.add(bundle.extraClass);
+
+      if(bundle.bundleType == "manual") {
+        limit = limit+Object.keys(bundle.offerProducts).length;
+        if(cpbundlef.bundle.products.length > 0) {
+          cpbundlef_addProducts(cpbundlef.bundle.products);
+          cpbundlef_wrap.classList.remove('cpbundlef_loading'); 
+        } else {
+          cpbundlef_wrap.remove();
+        }
+      } else {
+        fetch('/apps/ca/productFBundle/auto', {
+          method: 'POST',
+          body: JSON.stringify({
+            limit: bundle.limit,
+            handle: cpbundlef.handle,
+            product_id: cpbundlef.id
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(function(response){
+          if(response.ok) {
+            return response.json();
+          }
+          return new Error('Internal server error');
+        })
+        .then(function(result){
+          if(result.success) {
+            if(result.data != null) {
+              cpbundlef_addProducts(result.data); 
+            } else {
+              throw new Error('no_match');  
+            }            
+          } else {
+            throw new Error('gql_error');
+          }
+          cpbundlef_wrap.classList.remove('cpbundlef_loading');
+        })
+        .catch(function(e){
+          if(e.message == 'gql_error' || e.message == 'no_match') {
+            cpbundlef_wrap.querySelectorAll('.cpbundlef_productDefault').forEach(function(elem, index){
+              if(index >= parseInt(bundle.limit)) elem.remove();
+            });
+            cpbundlef_wrap.querySelector('.cpbundlef_productDefault:last-child .cpbundlef_plusIcon').remove();
+            cpbundlef_calPrice(cpbundlef_wrap);
+            cpbundlef_updateBtn(cpbundlef_wrap); 
+          }
+          cpbundlef_wrap.classList.remove('cpbundlef_loading');
+        });        
+        limit = limit+parseInt(bundle.limit);
+      }
+      cpbundlef_wrap.style.setProperty('--small-bundle-size', (limit * 220)+'px');
+      cpbundlef_wrap.style.setProperty('--bundle-size', (limit * 260)+'px');
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+      let cpbundlef_wrap = document.querySelector('.cpbundlef_widgetWrap');
+      if(cpbundlef_wrap != null) {
+        fetch('/apps/ca/productFBundle', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            handle: cpbundlef.handle,
+            id: cpbundlef.id.toString()
+          })
+        })   
+        .then(function(response){
+          if(response.ok) {
+            return response.json()
+          }
+          throw new Error('Something went wrong');
+        })
+        .then(function(result){
+          if(result.success && result.data != null) {
+            cpbundlef_build(result.data);
+          } else {
+            throw new Error('Couldn\'t fetch data');
+          }
+        })
+        .catch(function(e){
+          console.log(e);
+          cpbundlef_wrap.remove();
+        })
+        .then(function(){
+          if(cpbundlef_wrap != null && typeof cpbundlef.bundle  != 'undefined') {
+            cpbundlef_wrap.querySelectorAll('.cpbundlef_product .cpbundlef_soldOut').forEach(function(elem){
+              elem.innerText = cpbundlef.bundle.text_soldout;
+            });
+          }
+        });
+      }      
+    });
+
+    function cpbundlef_createDiscount(_this) {
+      const parent = _this.closest('.cpbundlef_widgetWrap');
+      let params = {
+        min_qty: parseInt(cpbundlef.bundle.minThreshold),
+        discount_type: cpbundlef.bundle.discountType
+      }
+      
+      const product_ids = [];
+      parent.querySelectorAll(".cpbundlef_product.cpbundlef_selected .cpbundlef_chkInput").forEach(function(elem){
+        product_ids.push('gid://shopify/ProductVariant/'+elem.getAttribute("data-id"));
+      });
+      
+      if(cpbundlef.bundle.discountType == 'percentage') {
+        params['products'] = product_ids;
+        params['discount_amount'] = parseFloat(cpbundlef.bundle.discount) / 100;
+      } else if(cpbundlef.bundle.discountType == 'fixed') {
+        params['products'] = product_ids;
+        params['discount_amount'] = parseFloat(cpbundlef.bundle.discount);
+      } else if(cpbundlef.bundle.discountType == 'free') {
+        const variant_buys = [];
+        if(parent.querySelector('.cpbundlef_product.cpbundlef_cheapest') != null) {
+          parent.querySelectorAll('.cpbundlef_product.cpbundlef_selected').forEach(function(elem){
+            if(!elem.classList.contains('cpbundlef_cheapest')) variant_buys.push('gid://shopify/ProductVariant/'+elem.querySelector('.cpbundlef_chkInput').getAttribute('data-id'));
+          });
+          const cheapest_item_id = parent.querySelector('.cpbundlef_product.cpbundlef_cheapest .cpbundlef_chkInput').getAttribute("data-id");            
+          params['variants_buy'] = variant_buys;
+          params['variants_get'] = ['gid://shopify/ProductVariant/'+cheapest_item_id];
+        } else {
+          _this.classList.remove('cpbundlef_btnLoading');
+          return;
+        }        
+      }
+  
+      let success = true;
+      fetch('/apps/ca/discountCreate',{
+        method: 'POST',
+        dataType: 'json',
+        body: JSON.stringify(params),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response){
+        success = response.ok;
+        return response.json();
+      })
+      .then(function(result){
+        if(success) {
+          if(result.success) {
+            location.href = "/discount/"+result.data+"?redirect=/cart";
+          } else {
+            throw new Error("Internal server error");    
+          }
+        } else {
+          throw new Error("Internal server error");
+        }
+      })
+      .catch(function(e){
+        _this.classList.remove('cpbundlef_btnLoading');
+        parent.querySelector('.cpbundlef_error').innerText = e.message;
+        parent.querySelector('.cpbundlef_error').classList.remove('cpbundlef_hide');
+      });
+    }
+
+    function cpbundlef_addBundle(_this) {
+      if(_this.disabled || _this.classList.contains('cpbundlef_btnLoading')) return;
+      _this.classList.add('cpbundlef_btnLoading');
+    
+      const parent = _this.closest('.cpbundlef_widgetWrap');
+      const items = [];
+      parent.querySelector('.cpbundlef_error').classList.add('cpbundlef_hide');
+      parent.querySelectorAll('.cpbundlef_selected').forEach(function(elem){
+        items.push({
+          id: elem.querySelector('.cpbundlef_chkInput').getAttribute('data-id'),
+          quantity: 1
+        });
+      });
+      
+      let success = true;
+      fetch(cpbundlef.cartAddUrl+'.js',{
+        method: 'POST',
+        dataType: 'json',
+        body: JSON.stringify({
+          items: items
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function(response){
+        success = response.ok;
+        return response.json();
+      })
+      .then(function(result){
+        if(success) {
+          if(parent.querySelector(".cpbundlef_price").getAttribute("data-sale") == "true") {
+            cpbundlef_createDiscount(_this);
+          } else {
+            location.href = '/cart';
+          }
+          // _this.classList.remove('cpbundlef_btnLoading');
+        } else {
+          throw new Error(result.description);
+        }
+      })
+      .catch(function(e){
+        _this.classList.remove('cpbundlef_btnLoading');
+        parent.querySelector('.cpbundlef_error').innerText = e.message;
+        parent.querySelector('.cpbundlef_error').classList.remove('cpbundlef_hide');
+      });
+    }
+  </script>
+</div>
