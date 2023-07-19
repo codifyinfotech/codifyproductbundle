@@ -291,6 +291,7 @@
       cpbundlef.moneyFormat = {{ shop.money_format | json }};
       cpbundlef.handle = {{ product.handle | json }};
       cpbundlef.id = {{ product.id | json }};
+      cpbundlef.collections = {{ product.collections | map: 'id' | join: '|' | json }};
     }
 
     function cpbundlef_formatMoney(cents, format) {
@@ -590,6 +591,7 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
+            collections: cpbundlef.collections,
             handle: cpbundlef.handle,
             id: cpbundlef.id.toString()
           })
