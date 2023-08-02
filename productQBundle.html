@@ -262,7 +262,7 @@
         })
         .then(function(result) {
           if(add_success) {
-            location.href = `/checkout?discount=${cpbundleq_getCookie(cookie_name)}`;
+            location.href = `/discount/${cpbundleq_getCookie(cookie_name)}?redirect=/cart`;
             _this.classList.remove('cpbundleq_loading');
           } else {
             throw new Error(result.description);
